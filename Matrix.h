@@ -2,6 +2,7 @@
 #define _MATRIX_H_
 
 #include <cstddef>
+#include <exception>
 
 template < class T > class Matrix
 {
@@ -15,9 +16,10 @@ public:
     Matrix(size_t size);
     Matrix(size_t rows, size_t cols);
     void resize(size_t rows, size_t cols);
-    Matrix(const Matrix &other);
+    Matrix(const Matrix<T> &other);
     T getElement(size_t i, size_t j) const;
     void setElement(size_t i, size_t j, T value);
+    const Matrix<T> &operator=(const Matrix<T> &other);
     ~Matrix();
 };
 
@@ -72,6 +74,38 @@ template< class T >
 void Matrix<T>::setElement(size_t i, size_t j, T value) {
     data[i*cols+j] = value;
 }
+
+template< class T >
+const Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other) {
+    this->rows = other.rows;
+    this->cols = other.cols;
+    this->size = other.size;
+    resize(size);
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++)
+        {
+            T val = other.getElement(i, j);
+            setElement(i, j, val);
+        }
+    }
+    return *this;
+}
+
+// template< class T >
+// Matrix<T> Matrix<T>::operator+(const Matrix<T> &other) {
+//     if (this->cols != other.cols || this->rows != other.rows)
+//     {
+//         throw std::range_error("Cannot add matrices of different sizes.")
+//     }
+    
+//     Matrix<T> Added = other;
+//     for (size_t i = 0; i < rows; i++) {
+//         for (size_t j = 0; j < cols; j++)
+//         {
+//             setElement(i, j, val);
+//         }
+//     }
+// }
 
 template< class T >
 Matrix<T>::~Matrix()
